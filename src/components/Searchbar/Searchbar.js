@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import { FaSearch } from 'react-icons/fa';
@@ -9,50 +9,87 @@ import {
   FormInput,
 } from './Searchbar.styled';
 
-class Searchbar extends Component {
-  state = {
-    inputValue: '',
+const Searchbar = ({ onSearch }) => {
+  const [query, setQuery] = useState('');
+
+  const handleInputChange = event => {
+    setQuery(event.currentTarget.value.toLowerCase());
   };
 
-  handleInputChange = event => {
-    this.setState({ inputValue: event.currentTarget.value.toLowerCase() });
-  };
-
-  handleSubmit = event => {
-    const { inputValue } = this.state;
+  const handleSubmit = event => {
     event.preventDefault();
-    if (inputValue.trim() === '') {
+    if (query.trim() === '') {
       return toast.warning('Search field is empty!');
     }
-    this.props.onSearch(inputValue);
-    this.setState({ inputValue: '' });
+    onSearch(query);
+    setQuery('');
   };
 
-  render() {
-    const { handleSubmit, handleInputChange } = this;
-    const { inputValue } = this.state;
+  return (
+    <SearchbarHeader>
+      <SearchForm onSubmit={handleSubmit}>
+        <SearchButton type="submit">
+          <FaSearch size={16} />
+        </SearchButton>
 
-    return (
-      <SearchbarHeader>
-        <SearchForm onSubmit={handleSubmit}>
-          <SearchButton type="submit">
-            <FaSearch size={16} />
-          </SearchButton>
+        <FormInput
+          type="text"
+          name="searchRequest"
+          value={query}
+          onChange={handleInputChange}
+          autoComplete="off"
+          autoFocus
+          placeholder="Search images and photos"
+        />
+      </SearchForm>
+    </SearchbarHeader>
+  );
+};
 
-          <FormInput
-            type="text"
-            name="searchRequest"
-            value={inputValue}
-            onChange={handleInputChange}
-            autoComplete="off"
-            autoFocus
-            placeholder="Search images and photos"
-          />
-        </SearchForm>
-      </SearchbarHeader>
-    );
-  }
-}
+// class Searchbar extends Component {
+//   state = {
+//     inputValue: '',
+//   };
+
+//   handleInputChange = event => {
+//     this.setState({ inputValue: event.currentTarget.value.toLowerCase() });
+//   };
+
+//   handleSubmit = event => {
+//     const { inputValue } = this.state;
+//     event.preventDefault();
+//     if (inputValue.trim() === '') {
+//       return toast.warning('Search field is empty!');
+//     }
+//     this.props.onSearch(inputValue);
+//     this.setState({ inputValue: '' });
+//   };
+
+//   render() {
+//     const { handleSubmit, handleInputChange } = this;
+//     const { inputValue } = this.state;
+
+//     return (
+//       <SearchbarHeader>
+//         <SearchForm onSubmit={handleSubmit}>
+//           <SearchButton type="submit">
+//             <FaSearch size={16} />
+//           </SearchButton>
+
+//           <FormInput
+//             type="text"
+//             name="searchRequest"
+//             value={inputValue}
+//             onChange={handleInputChange}
+//             autoComplete="off"
+//             autoFocus
+//             placeholder="Search images and photos"
+//           />
+//         </SearchForm>
+//       </SearchbarHeader>
+//     );
+//   }
+// }
 
 Searchbar.propTypes = {
   onSearch: PropTypes.func.isRequired,
